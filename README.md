@@ -79,6 +79,26 @@ python app.py
 
 Then open `http://127.0.0.1:5000` in a browser.
 
+## Free deployment on PythonAnywhere
+
+PythonAnywhere's free Beginner account supports one Python web app at `YOUR_USERNAME.pythonanywhere.com`. The app's SQLite database and uploaded photos live in your account's persistent home directory, so they survive web-app reloads. The free tier has restricted outbound internet, a 512 MB private-storage limit, and limited CPU; this app does not need outbound services at runtime. Check [current plan details](https://www.pythonanywhere.com/pricing/).
+
+1. Create a free Beginner account on [PythonAnywhere](https://www.pythonanywhere.com/registration/register/beginner/).
+2. In a PythonAnywhere Bash console, create an SSH key with `ssh-keygen -t ed25519`, then display the public key with `cat ~/.ssh/id_ed25519.pub`. Add that public key to GitHub under **Settings → SSH and GPG keys**. Never share the private key file.
+3. Clone the private repository and install its dependencies:
+
+	```bash
+	git clone git@github.com:SARBESH-DHAKAL/lostlink.git ~/lostlink
+	mkvirtualenv --python=/usr/bin/python3.11 lostlink-venv
+	pip install -r ~/lostlink/requirements.txt
+	```
+
+4. In PythonAnywhere's **Web** tab, add a web app using **Manual configuration** and Python 3.11. Set its virtualenv to `/home/YOUR_USERNAME/.virtualenvs/lostlink-venv`.
+5. Open the WSGI configuration file linked from the Web tab. Replace its contents with [deploy/pythonanywhere_wsgi.py](deploy/pythonanywhere_wsgi.py), replacing `YOUR_USERNAME` and both secret placeholders. Generate the Flask secret in the PythonAnywhere Bash console with `python -c "import secrets; print(secrets.token_hex(32))"`; choose a different strong password for the admin account.
+6. Save the WSGI file and reload the web app. Visit `https://YOUR_USERNAME.pythonanywhere.com` and sign in as `admin@lostlink.edu`.
+
+This option is free but intended for demos and small projects, not production workloads. Keep the repository private, and do not put real secrets in files committed to GitHub.
+
 ## Deploying to Render
 
 The included `render.yaml` Blueprint provisions the Flask web service, PostgreSQL database, and persistent storage for uploaded photos. At current published rates, this smallest durable setup is approximately $13.25/month: $7 for the web service, $6 for PostgreSQL, and $0.25 for the 1 GB upload disk. Prices and usage charges can change; review [Render pricing](https://render.com/pricing) before provisioning.
