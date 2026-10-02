@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Report {{ report_type }} Item | LostLink{% endblock %}
+
+{% block content %}
+  <section class="page-heading">
+    <div class="container">
+      <span class="eyebrow">Campus reporting</span>
+      <h1>Report a {{ report_type|lower }} item</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container form-shell">
+      {% if success and item %}
+        <div class="success-box">
+          <h2>Your {{ report_type|lower }}-item report has been submitted successfully.</h2>
+          <p>We’ve saved your report and you can review it below.</p>
+          <a href="{{ url_for('main.item_detail', item_id=item.item_id) }}" class="btn btn-primary">View My Report</a>
+        </div>
+      {% endif %}
+
+      <form class="report-form" method="post" enctype="multipart/form-data" novalidate>
+        <div class="form-grid">
+          <label>
+            <span>Item name</span>
+            <input type="text" name="item_name" value="{{ form_data.item_name if form_data else '' }}" placeholder="e.g. Blue Notebook" />
+            {% if errors.item_name %}<small class="error-text">{{ errors.item_name }}</small>{% endif %}
+          </label>
+
+          <label>
+            <span>Category</span>
+            <select name="category">
+              <option value="">Select a category</option>
+              {% for category in categories %}
+                <option value="{{ category.category_name }}" {% if form_data and form_data.category == category.category_name %}selected{% endif %}>{{ category.category_name }}</option>
+              {% endfor %}
+            </select>
+            {% if errors.category %}<small class="error-text">{{ errors.category }}</small>{% endif %}
+          </label>
+
+          <label class="full-width">
+            <span>Description</span>
+            <textarea name="description" rows="5" placeholder="Provide useful details like brand, color, distinguishing marks, and where you last saw it.">{{ form_data.description if form_data else '' }}</textarea>
+            {% if errors.description %}<small class="error-text">{{ errors.description }}</small>{% endif %}
+          </label>
+
+          <label>
+            <span>Location</span>
+            <input type="text" name="location" value="{{ form_data.location if form_data else '' }}" placeholder="e.g. College Library" />
+            {% if errors.location %}<small class="error-text">{{ errors.location }}</small>{% endif %}
+          </label>
+
+          <label>
+            <span>Date</span>
+            <input type="date" name="report_date" value="{{ form_data.report_date if form_data else '' }}" />
+            {% if errors.report_date %}<small class="error-text">{{ errors.report_date }}</small>{% endif %}
+          </label>
+
+          <label class="full-width">
+            <span>Optional image</span>
+            <input type="file" name="photo" accept=".png,.jpg,.jpeg,.webp" />
+            {% if errors.photo %}<small class="error-text">{{ errors.photo }}</small>{% endif %}
+          </label>
+        </div>
+
+        <div class="form-submit-row">
+          <button type="submit" class="btn btn-primary">Submit Report</button>
+          <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

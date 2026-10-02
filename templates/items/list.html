@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}{{ report_type }} Items | LostLink{% endblock %}
+
+{% block content %}
+  <section class="page-heading">
+    <div class="container">
+      <span class="eyebrow">{{ report_type }} items</span>
+      <h1>{{ report_type }} Items</h1>
+    </div>
+  </section>
+
+  <section class="section muted-section">
+    <div class="container">
+      <form class="filter-form" method="get" action="{{ url_for('main.lost_items') if report_type == 'Lost' else url_for('main.found_items') }}">
+        <div class="filter-grid">
+          <label>
+            <span>Keyword</span>
+            <input type="text" name="keyword" value="{{ keyword }}" placeholder="Search item or description" />
+          </label>
+
+          <label>
+            <span>Category</span>
+            <select name="category">
+              <option value="">All categories</option>
+              {% for category in categories %}
+                <option value="{{ category.category_name }}" {% if category_name == category.category_name %}selected{% endif %}>{{ category.category_name }}</option>
+              {% endfor %}
+            </select>
+          </label>
+
+          <label>
+            <span>Location</span>
+            <input type="text" name="location" value="{{ location }}" placeholder="Library, lab, etc." />
+          </label>
+
+          <label>
+            <span>Status</span>
+            <select name="status">
+              <option value="">Any status</option>
+              {% for option in status_options %}
+                <option value="{{ option }}" {% if status == option %}selected{% endif %}>{{ option }}</option>
+              {% endfor %}
+            </select>
+          </label>
+
+          <label>
+            <span>Sort</span>
+            <select name="sort">
+              <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Newest</option>
+              <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Oldest</option>
+              <option value="updated" {% if sort == 'updated' %}selected{% endif %}>Recently updated</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="filter-actions">
+          <button type="submit" class="btn btn-primary">Apply Filters</button>
+          <a href="{{ url_for('main.lost_items') if report_type == 'Lost' else url_for('main.found_items') }}" class="btn btn-secondary">Clear</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      {% if items %}
+        <div class="card-grid">
+          {% for item in items %}
+            <article class="item-card">
+              <div class="card-image">
+                {% if item.photo_path %}
+                  <img src="{{ item.photo_path }}" alt="{{ item.item_name }}" />
+                {% else %}
+                  <div class="image-placeholder"><span>{{ item.item_name[:2]|upper }}</span></div>
+                {% endif %}
+              </div>
+              <div class="card-body">
+                <div class="card-row">
+                  <span class="status-badge {{ 'found' if item.report_type == 'Found' else 'lost' }}">{{ item.report_type }}</span>
+                  <span class="muted">{{ item.category.category_name }}</span>
+                </div>
+                <h3>{{ item.item_name }}</h3>
+                <ul class="meta-list">
+                  <li><strong>Location:</strong> {{ item.location }}</li>
+                  <li><strong>Date:</strong> {{ item.report_date.strftime('%b %d, %Y') }}</li>
+                  <li><strong>Status:</strong> {{ item.status }}</li>
+                </ul>
+                <a href="{{ url_for('main.item_detail', item_id=item.item_id) }}" class="btn btn-secondary btn-block">View Details</a>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <h3>No {{ report_type|lower }} items match your search.</h3>
+          <p>Try changing the filters or returning to the main campus listings.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

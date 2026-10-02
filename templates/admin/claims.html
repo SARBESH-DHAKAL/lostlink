@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Claim Review | LostLink{% endblock %}
+
+{% block content %}
+  <section class="page-shell">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <span class="eyebrow eyebrow-dark">Administration</span>
+          <h1>Claim review</h1>
+        </div>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">My dashboard</a>
+      </div>
+
+      <div class="panel-card admin-claims-panel">
+        <h2>Pending claims <span class="admin-count">{{ claims|length }}</span></h2>
+        {% if claims %}
+          <div class="admin-claim-list">
+            {% for claim in claims %}
+              <article class="admin-claim">
+                <div class="admin-claim-heading">
+                  <div>
+                    <h3>{{ claim.item_report.item_name }}</h3>
+                    <p>{{ claim.item_report.report_type }} · {{ claim.item_report.location }}</p>
+                  </div>
+                  <span class="status-badge status-pending">Pending</span>
+                </div>
+                <dl class="claim-details">
+                  <div>
+                    <dt>Claimant</dt>
+                    <dd>{{ claim.user.full_name }} · {{ claim.user.email }}</dd>
+                  </div>
+                  <div>
+                    <dt>Submitted</dt>
+                    <dd>{{ claim.created_at.strftime('%d %b %Y, %H:%M') }}</dd>
+                  </div>
+                  <div>
+                    <dt>Claim description</dt>
+                    <dd>{{ claim.claim_description }}</dd>
+                  </div>
+                  <div>
+                    <dt>Verification details</dt>
+                    <dd>{{ claim.verification_information }}</dd>
+                  </div>
+                </dl>
+                <div class="admin-claim-actions">
+                  <form method="post" action="{{ url_for('main.review_claim', claim_id=claim.claim_id, decision='reject') }}">
+                    <button class="btn btn-secondary" type="submit">Reject</button>
+                  </form>
+                  <form method="post" action="{{ url_for('main.review_claim', claim_id=claim.claim_id, decision='approve') }}">
+                    <button class="btn btn-primary" type="submit">Approve and return item</button>
+                  </form>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="muted-text">There are no claims waiting for review.</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

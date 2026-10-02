@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | LostLink{% endblock %}
+
+{% block content %}
+  <section class="auth-shell">
+    <div class="auth-card">
+      <div class="auth-header">
+        <span class="eyebrow">Welcome back</span>
+        <h1>Login to LostLink</h1>
+      </div>
+
+      <form method="POST" class="auth-form">
+        <label>
+          <span>Email address</span>
+          <input type="email" name="email" value="{{ form_data.email }}" placeholder="name@student.asmt.edu.np" required />
+          {% if errors.email %}<small class="error-text">{{ errors.email }}</small>{% endif %}
+        </label>
+
+        <label>
+          <span>Password</span>
+          <input type="password" name="password" placeholder="Enter your password" required />
+        </label>
+
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+      </form>
+
+      <p class="auth-switch">
+        Don’t have an account?
+        <a href="{{ url_for('main.register') }}">Register here</a>
+      </p>
+    </div>
+  </section>
+{% endblock %}

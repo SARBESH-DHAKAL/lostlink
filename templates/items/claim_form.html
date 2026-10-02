@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Claim {{ item.item_name }} | LostLink{% endblock %}
+
+{% block content %}
+  <section class="auth-shell">
+    <div class="auth-card">
+      <div class="auth-header">
+        <span class="eyebrow">Claim item</span>
+        <h1>Claim {{ item.item_name }}</h1>
+      </div>
+
+      <form method="POST" class="auth-form">
+        <label>
+          <span>Claim description</span>
+          <textarea name="claim_description" placeholder="Tell us why you believe this item is yours and include any identifying details." required>{{ form_data.claim_description }}</textarea>
+          {% if errors.claim_description %}<small class="error-text">{{ errors.claim_description }}</small>{% endif %}
+        </label>
+
+        <label>
+          <span>Verification information</span>
+          <textarea name="verification_information" placeholder="Add a serial number, unique feature, location detail, or proof that matches the item." required>{{ form_data.verification_information }}</textarea>
+          {% if errors.verification_information %}<small class="error-text">{{ errors.verification_information }}</small>{% endif %}
+        </label>
+
+        <div class="detail-actions compact-actions">
+          <button type="submit" class="btn btn-primary">Submit claim</button>
+          <a href="{{ url_for('main.item_detail', item_id=item.item_id) }}" class="btn btn-secondary">Back</a>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

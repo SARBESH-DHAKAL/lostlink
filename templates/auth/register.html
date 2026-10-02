@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Register | LostLink{% endblock %}
+
+{% block content %}
+  <section class="auth-shell">
+    <div class="auth-card">
+      <div class="auth-header">
+        <span class="eyebrow">Join the campus</span>
+        <h1>Create your account</h1>
+      </div>
+
+      <form method="POST" class="auth-form">
+        <label>
+          <span>Full name</span>
+          <input type="text" name="full_name" value="{{ form_data.full_name }}" placeholder="Enter your full name" required />
+          {% if errors.full_name %}<small class="error-text">{{ errors.full_name }}</small>{% endif %}
+        </label>
+
+        <label>
+          <span>Email address</span>
+          <input type="email" name="email" value="{{ form_data.email }}" placeholder="name@student.asmt.edu.np" required />
+          {% if errors.email %}<small class="error-text">{{ errors.email }}</small>{% endif %}
+        </label>
+
+        <label>
+          <span>Password</span>
+          <input type="password" name="password" placeholder="Choose a secure password" required />
+          {% if errors.password %}<small class="error-text">{{ errors.password }}</small>{% endif %}
+        </label>
+
+        <label>
+          <span>Confirm password</span>
+          <input type="password" name="confirm_password" placeholder="Repeat your password" required />
+          {% if errors.confirm_password %}<small class="error-text">{{ errors.confirm_password }}</small>{% endif %}
+        </label>
+
+        <button type="submit" class="btn btn-primary btn-block">Create account</button>
+      </form>
+
+      <p class="auth-switch">
+        Already registered?
+        <a href="{{ url_for('main.login') }}">Login here</a>
+      </p>
+    </div>
+  </section>
+{% endblock %}

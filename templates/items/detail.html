@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.item_name }} | LostLink{% endblock %}
+
+{% block content %}
+  <section class="page-heading">
+    <div class="container">
+      <span class="eyebrow">Item detail</span>
+      <h1>{{ item.item_name }}</h1>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container detail-layout">
+      <div class="detail-image-panel">
+        {% if item.photo_path %}
+          <img src="{{ item.photo_path }}" alt="{{ item.item_name }}" class="detail-image" />
+        {% else %}
+          <div class="detail-image-placeholder">
+            <span>{{ item.item_name[:2]|upper }}</span>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="detail-content">
+        <div class="card-row">
+          <span class="status-badge {{ 'found' if item.report_type == 'Found' else 'lost' }}">{{ item.report_type }}</span>
+          <span class="status-text">{{ item.status }}</span>
+        </div>
+
+        <h2>{{ item.item_name }}</h2>
+
+        <dl class="detail-list">
+          <div>
+            <dt>Category</dt>
+            <dd>{{ item.category.category_name }}</dd>
+          </div>
+          <div>
+            <dt>Location</dt>
+            <dd>{{ item.location }}</dd>
+          </div>
+          <div>
+            <dt>Report date</dt>
+            <dd>{{ item.report_date.strftime('%b %d, %Y') }}</dd>
+          </div>
+          <div>
+            <dt>Description</dt>
+            <dd>{{ item.description }}</dd>
+          </div>
+        </dl>
+
+        <div class="detail-actions">
+          {% if current_user.is_authenticated and item.user_id != current_user.user_id %}
+            <a href="{{ url_for('main.claim_item', item_id=item.item_id) }}" class="btn btn-primary">I Think This Is Mine</a>
+          {% elif not current_user.is_authenticated %}
+            <a href="{{ url_for('main.login', next=url_for('main.claim_item', item_id=item.item_id)) }}" class="btn btn-primary">Login to claim</a>
+          {% else %}
+            <span class="status-text">This is your submitted item.</span>
+          {% endif %}
+          <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Back to home</a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
